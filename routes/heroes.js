@@ -2,7 +2,7 @@ const express = require('express')
 const req = require('express/lib/request')
 const app = express()
 const heroes = require('../heroes.json')
-const {verifyHero, deleteHero, verifyPower} = require('../middleware/heroes')
+const {verifyHero, deleteHero, verifyPower, validateHero} = require('../middleware/heroes')
 
 app.get('/', (req, res) => {
     res.json(heroes)
@@ -33,7 +33,7 @@ app.get('/:slug/powers', (req, res) => {
     }
 })
 
-app.post('/', verifyHero, (req, res) => {
+app.post('/', verifyHero, validateHero, (req, res) => {
 
     const hero = {
         slug: req.body.slug,
@@ -86,9 +86,31 @@ app.delete('/:slug', deleteHero, (req, res) => {
 })
 
 app.delete('/:slug/power/:power', deleteHero, verifyPower, (req, res) => {
-    // heroes.power.splice()
-    res.json("ok")
+    heroes[req.heroFindIndex].power.splice(req.powerFindIndex, 1)
+    res.json(`Le pouvoir ${req.powerFind} du héro ${req.heroFind.slug} a été effacé correctement`)
 })
 
+
+app.put('/:slug', validateHero, (req,res) => {
+    const heroPutFindIndex = heroes.findIndex((hero) => {
+        return hero.slug === req.params.slug
+    })
+
+    if(heroPutFindIndex > -1){
+        const hero = heroes[heroPutFindIndex]
+        hero.slug = req.body.slug
+        hero.name = req.body.name
+        hero.power = req.body.power
+        hero.color = req.body.color
+        hero.isAlive = req.body.isAlive
+        hero.age = req.body.age
+        hero.image = req.body.image
+
+       res.json(hero)
+
+    }else{
+        res.status(404).send("Hero Not found")
+    }
+})
 
 module.exports = app
