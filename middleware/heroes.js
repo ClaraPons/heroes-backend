@@ -3,15 +3,13 @@ const _ = require('lodash');
 const { keys } = require('lodash');
 
 const verifyHero = (req, res, next) => {
+
     const heroFind = heroes.find((hero) =>{
         return hero.slug === req.body.slug
     })
 
-    const heroFindNew = heroes.find((hero) =>{
-        return hero.slug === req.params.slug
-    })
-
     if (heroFind){
+
         console.log("je suis dans Hero middleware")
         res.status(404).send('Hero already exist')
     }else{
@@ -62,11 +60,7 @@ const verifyPower = (req, res, next) => {
 
 const validateHero = (req, res, next) => {
     
-    const heroFindNew = heroes.find((hero) =>{
-        return hero.slug === req.params.slug
-    })
-
-    const keysParamsArray = Object.keys(heroFindNew).sort()
+    const keysParamsArray = Object.keys(heroes[0]).sort()
     const keysBodyArray  = Object.keys(req.body).sort()
     console.log("je suis dans Validate middleware")
     console.log(keysParamsArray, keysBodyArray)
