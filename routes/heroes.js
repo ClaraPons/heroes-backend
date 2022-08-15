@@ -68,11 +68,15 @@ app.put('/:slug/powers', (req, res) => {
         // res.send("ca marche")
 
         if(heroIncludes){
-            res.json("power already exist")
+            res.status(404).json("power already exist")
         }else{
-            hero.power.push(req.body.power)
-            console.log(hero)
-            res.json(hero)
+            if(power === undefined || power === ' '){
+                res.status(409).json("power is empty")
+            }else{
+                hero.power.push(req.body.power)
+                console.log(hero)
+                res.json(hero)
+            }
         }
         
     }else{
